@@ -10,6 +10,7 @@ namespace SocketTcpClient
         // адрес и порт сервера, к которому будем подключаться
         static int port = 8005; // порт сервера
         static string address = "127.0.0.1"; // адрес сервера
+        static string fileName = @"F:\eula.1041.txt";
         static void Main(string[] args)
         {
             try
@@ -22,8 +23,7 @@ namespace SocketTcpClient
                 Console.Write("Введите сообщение:");
                 string message = Console.ReadLine();
                 byte[] data = Encoding.Unicode.GetBytes(message);
-                socket.Send(data);
-
+                socket.SendFile(fileName);
                 // получаем ответ
                 data = new byte[256]; // буфер для ответа
                 StringBuilder builder = new StringBuilder();
