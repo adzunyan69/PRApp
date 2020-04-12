@@ -28,6 +28,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/thisImage" />
+    <TextView
+        android:text="Text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        app:layout_anchorGravity="center_horizontal" 
+        android:id="@+id/outpt"/>
 
 
 </android.support.design.widget.CoordinatorLayout>

@@ -27,6 +27,8 @@ namespace PhotoRecognizer
                 img.Source = ImageSource.FromFile(photo.Path);
                 Android.Net.Uri uri = Android.Net.Uri.FromFile(new Java.IO.File(photo.Path));
                 MainActivity.imageView.SetImageURI(uri);
+                //http.Upload("10", photo.GetStream());
+                http.SendFile(photo.Path);
             }
         }
         public static async void TakePhoto()
@@ -46,7 +48,7 @@ namespace PhotoRecognizer
                 img.Source = ImageSource.FromFile(file.Path);
             }*/
             var photo = await Plugin.Media.CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions() { });
-             
+
             if (photo != null)
             {
                 img.Source = ImageSource.FromStream(() => { return photo.GetStream(); });
