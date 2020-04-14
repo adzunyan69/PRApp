@@ -28,7 +28,8 @@ namespace PhotoRecognizer
                 Android.Net.Uri uri = Android.Net.Uri.FromFile(new Java.IO.File(photo.Path));
                 MainActivity.imageView.SetImageURI(uri);
                 //http.Upload("10", photo.GetStream());
-                http.SendFile(photo.Path);
+                //http.SendFile(photo.Path);
+                Sockets.sendThis(photo.Path);
             }
         }
         public static async void TakePhoto()
@@ -54,6 +55,7 @@ namespace PhotoRecognizer
                 img.Source = ImageSource.FromStream(() => { return photo.GetStream(); });
                 Android.Net.Uri uri = Android.Net.Uri.FromFile(new Java.IO.File(photo.Path));
                 MainActivity.imageView.SetImageURI(uri);
+                Sockets.sendThis(photo.Path);
             }
         }
 
