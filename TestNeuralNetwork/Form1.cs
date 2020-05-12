@@ -30,10 +30,14 @@ namespace TestNeuralNetwork
             public const float Scale = 1;
             public const bool ChannelsLast = true;
         }
+        MLContext mlContext = new MLContext();
+        ITransformer model;
+
         public Form1()
         {
             InitializeComponent();
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            model = GenerateModel(mlContext);
         }
         public static void ClassifySingleImage(MLContext mlContext, ITransformer model)
         {
@@ -82,6 +86,7 @@ namespace TestNeuralNetwork
             predictedLabelColumnName: "PredictedLabel");
             Console.WriteLine($"LogLoss is: {metrics.LogLoss}");
             Console.WriteLine($"PerClassLogLoss is: {String.Join(" , ", metrics.PerClassLogLoss.Select(c => c.ToString()))}");
+            mlContext.Model.Save(model, trainingData.Schema, "NeuralModel.zip");
             return model;
         }
         private static void DisplayResults(IEnumerable<ImagePrediction> imagePredictionData)
@@ -112,10 +117,16 @@ namespace TestNeuralNetwork
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
             pictureBox1.Image = Image.FromFile(openFileDialog1.FileName);
-            MLContext mlContext = new MLContext();
-            ITransformer model = GenerateModel(mlContext);
             //ClassifySingleImage(mlContext, model);
-            ClassifyThisImage(mlContext, model, openFileDialog1.FileName);
+
+            
+            //Define DataViewSchema for data preparation pipeline and trained model
+            DataViewSchema modelSchema;
+            // Load trained model
+            ITransformer loadedModel = mlContext.Model.Load("NeuralModel.zip", out modelSchema);
+
+            //ClassifyThisImage(mlContext, model, openFileDialog1.FileName);
+            ClassifyThisImage(mlContext, loadedModel, openFileDialog1.FileName);
             setText(outputText);
         }
 
