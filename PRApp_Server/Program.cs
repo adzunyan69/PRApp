@@ -3,13 +3,32 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
+using PRApp_Server;
+using System.Collections.Generic;
 
 namespace SocketTcpServer
 {
     class Program
     {
         static int port = 8005; // порт для приема входящих запросов
+        static NeuralNetworkClassifiyer nnc = new NeuralNetworkClassifiyer();
+
         static void Main(string[] args)
+        {
+            // nnc.Init();
+            nnc.LoadTrainedNN();
+            // testNeural();
+            listenerCycle();
+        }
+
+        static void testNeural()
+        {
+            string testPathToImage = @"E:\PRApp\PRApp_Server\bin\Debug\netcoreapp2.1\picBy192.168.56.1_650.jpg";
+            nnc.Classify(testPathToImage);
+
+        }
+
+        static void listenerCycle()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
             string ipAddr = "";
@@ -27,6 +46,8 @@ namespace SocketTcpServer
             listener.Start();
             while (true)
             {
+                string lastFilePath;
+
                 using (var client = listener.AcceptTcpClient())
                 using (var stream = client.GetStream())
                 using (var output = File.Create("picBy" + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString() + "_" + DateTime.Now.Millisecond.ToString() + ".jpg"))
@@ -35,13 +56,22 @@ namespace SocketTcpServer
 
                     var buffer = new byte[1024];
                     int bytesRead;
-                    while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+                    while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) == buffer.Length)
                     {
                         output.Write(buffer, 0, bytesRead);
                     }
                     Console.WriteLine("File " + output.Name + " successfully saved");
+                    lastFilePath = output.Name;
+
                 }
+
+
+                Console.WriteLine("Trying to classify object at the image...");
+                nnc.Classify(lastFilePath);
             }
+        }
+        
+            
             /*
             // получаем адреса для запуска сокета
             IPEndPoint ipPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
@@ -89,6 +119,6 @@ namespace SocketTcpServer
                 Console.WriteLine(ex.Message);
             }
             */
-        }
+        
     }
 }

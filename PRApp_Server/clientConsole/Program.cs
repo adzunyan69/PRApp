@@ -9,8 +9,8 @@ namespace SocketTcpClient
     {
         // адрес и порт сервера, к которому будем подключаться
         static int port = 8005; // порт сервера
-        static string address = "127.0.0.1"; // адрес сервера
-        static string fileName = @"F:\eula.1041.txt";
+        static string address = "192.168.56.1"; // адрес сервера
+        static string fileName = @"E:\PRApp\PRApp_Server\bin\Debug\netcoreapp2.1\assets\images\dozer18.jpg";
         static void Main(string[] args)
         {
             try
@@ -20,12 +20,9 @@ namespace SocketTcpClient
                 Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 // подключаемся к удаленному хосту
                 socket.Connect(ipPoint);
-                Console.Write("Введите сообщение:");
-                string message = Console.ReadLine();
-                byte[] data = Encoding.Unicode.GetBytes(message);
                 socket.SendFile(fileName);
                 // получаем ответ
-                data = new byte[256]; // буфер для ответа
+                byte[] data = new byte[256]; // буфер для ответа
                 StringBuilder builder = new StringBuilder();
                 int bytes = 0; // количество полученных байт
 
