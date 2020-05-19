@@ -9,13 +9,17 @@ namespace PRApp_Server
 {
     public class UDPListener
     {
-            private const int listenPort = 8004;
-
+        private const int listenPort = 8004;
+        public static UdpClient listener = new UdpClient(listenPort);
+        public static IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);
+        public static Socket UDPServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        public static void sendToUser(string messageToUser, IPAddress userIP)
+        {
+            byte[] msg = Encoding.ASCII.GetBytes(messageToUser);
+            UDPServerSocket.SendTo(msg, new IPEndPoint(groupEP.Address, listenPort)); //groupEP);
+        }
             public static void StartListener()
             {
-                UdpClient listener = new UdpClient(listenPort);
-                IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);
-                Socket UDPServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             byte[] msg = Encoding.ASCII.GetBytes("Hi") ;
                 try
                 {
@@ -24,8 +28,9 @@ namespace PRApp_Server
                         byte[] bytes = listener.Receive(ref groupEP);
                         if (bytes[0] == msg[0])
                         {
-                            Thread.Sleep(5000);
-                            UDPServerSocket.SendTo(msg, new IPEndPoint(groupEP.Address, listenPort)); //groupEP);
+                            Thread.Sleep(2000);
+                            sendToUser("Hi", groupEP.Address);
+                            //UDPServerSocket.SendTo(msg, new IPEndPoint(groupEP.Address, listenPort)); //groupEP);
                             Console.WriteLine($"User {groupEP} connected");
                         }
                         //Console.WriteLine($" {Encoding.ASCII.GetString(bytes, 0, bytes.Length)}");

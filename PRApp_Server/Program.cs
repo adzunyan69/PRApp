@@ -31,7 +31,7 @@ namespace SocketTcpServer
         static void testNeural()
         {
             string testPathToImage = @"E:\PRApp\PRApp_Server\bin\Debug\netcoreapp2.1\picBy192.168.56.1_650.jpg";
-            nnc.Classify(testPathToImage);
+            //nnc.Classify(testPathToImage);
 
         }
 
@@ -54,19 +54,28 @@ namespace SocketTcpServer
             while (true)
             {
                 string lastFilePath;
-
+                IPAddress userIP;
                 using (var client = listener.AcceptTcpClient())
                 using (var stream = client.GetStream())
                 using (var output = File.Create("picBy" + ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString() + "_" + DateTime.Now.Millisecond.ToString() + ".jpg"))
                 {
-                    Console.WriteLine("Receiving the file...");
+                    userIP = ((IPEndPoint)client.Client.RemoteEndPoint).Address;
+                    Console.Write("Receiving the file...");
 
                     var buffer = new byte[1024];
-                    int bytesRead;
+                    int bytesRead, cx=0;
                     while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) >0)//== buffer.Length) // это был не баг, так и должно быть
                     {
                         output.Write(buffer, 0, bytesRead);
+                        if (cx < 40)
+                            cx++;
+                        else
+                        {
+                            Console.Write(".");
+                            cx = 0;
+                        } 
                     }
+                    Console.WriteLine();
                     Console.WriteLine("File " + output.Name + " successfully saved");
                     lastFilePath = output.Name;
 
@@ -74,7 +83,7 @@ namespace SocketTcpServer
 
 
                 Console.WriteLine("Trying to classify object at the image...");
-                nnc.Classify(lastFilePath);
+                nnc.Classify(lastFilePath, userIP);
             }
         }
         

@@ -27,7 +27,7 @@ namespace PhotoRecognizer
             byte[] msg = Encoding.ASCII.GetBytes("Hi");
             try
             {
-                //while (true)
+                while (true)
                 {
                     byte[] bytes = listener.Receive(ref groupEP);
                     if (bytes[0] == msg[0])
@@ -35,6 +35,10 @@ namespace PhotoRecognizer
                         //UDPServerSocket.SendTo(msg, new IPEndPoint(groupEP.Address,UDPPort));
                         Sockets.serverAddress = groupEP.Address;
                         Console.WriteLine($"connected to server {groupEP} ");
+                    }
+                    else
+                    {
+                        MainActivity.txtOut(Encoding.Default.GetString(bytes));
                     }
                     //Console.WriteLine($" {Encoding.ASCII.GetString(bytes, 0, bytes.Length)}");
                 }

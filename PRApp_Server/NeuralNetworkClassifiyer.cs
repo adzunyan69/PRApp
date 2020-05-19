@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 
@@ -32,9 +33,9 @@ namespace PRApp_Server
             model = GenerateModel(mlContext);
         }
 
-        public void Classify(string path)
+        public void Classify(string path, IPAddress userIP)
         {
-            ClassifySingleImage(mlContext, model, path);
+            ClassifySingleImage(mlContext, model, path, userIP);
 
         }
         public class ImageData
@@ -80,7 +81,7 @@ namespace PRApp_Server
              });
         }
 
-        public static void ClassifySingleImage(MLContext mlContext, ITransformer model, string path)
+        public static void ClassifySingleImage(MLContext mlContext, ITransformer model, string path, IPAddress userIP)
         {
             var imageData = new ImageData()
             {
@@ -90,6 +91,7 @@ namespace PRApp_Server
             // Make prediction function (input = ImageData, output = ImagePrediction)
             var predictor = mlContext.Model.CreatePredictionEngine<ImageData, ImagePrediction>(model);
             var prediction = predictor.Predict(imageData);
+            UDPListener.sendToUser(prediction.PredictedLabelValue, userIP);
             Console.WriteLine($"Image: {Path.GetFileName(imageData.ImagePath)} predicted as: {prediction.PredictedLabelValue} with score: {prediction.Score.Max()} ");
         }
 

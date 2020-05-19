@@ -17,6 +17,7 @@ namespace PhotoRecognizer
     {
 
         public static ImageView imageView;
+        public static TextView outputTV;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -33,7 +34,15 @@ namespace PhotoRecognizer
             FloatingActionButton fabCam = FindViewById<FloatingActionButton>(Resource.Id.fabCam);
             fabCam.Click += FabCamOnClick;
             imageView = FindViewById<ImageView>(Resource.Id.thisImage);
+            outputTV = FindViewById<TextView>(Resource.Id.outpt);
             UDPConnection.SendBroadcast();
+        }
+        public static void txtOut(string txt)
+        {
+            //outputTV.Text = txt;
+            outputTV.Post(() => {
+                outputTV.Text = txt;
+            });
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
