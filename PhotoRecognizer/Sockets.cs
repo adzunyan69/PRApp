@@ -15,10 +15,11 @@ namespace PhotoRecognizer
 {
     class Sockets
     {
+        public static System.Net.IPAddress serverAddress = System.Net.IPAddress.Parse("192.168.2.138");
         public static void sendThis(string path)
         {
 
-            System.Net.IPAddress IP = System.Net.IPAddress.Parse("192.168.0.104");
+            System.Net.IPAddress IP = serverAddress;//System.Net.IPAddress.Parse("192.168.0.103");
             System.Net.IPEndPoint endPoint = new System.Net.IPEndPoint(IP, 8005);
 
             Socket client = new Socket(AddressFamily.InterNetwork,

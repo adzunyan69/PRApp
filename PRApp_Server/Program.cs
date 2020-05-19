@@ -5,6 +5,8 @@ using System.Net.Sockets;
 using System.IO;
 using PRApp_Server;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SocketTcpServer
 {
@@ -16,7 +18,12 @@ namespace SocketTcpServer
         static void Main(string[] args)
         {
             // nnc.Init();
-            nnc.LoadTrainedNN();
+            nnc.LoadTrainedNN(); 
+
+            Task task = new Task(UDPListener.StartListener);
+            task.Start();
+            //UDPListener.StartListener();
+
             // testNeural();
             listenerCycle();
         }
@@ -56,7 +63,7 @@ namespace SocketTcpServer
 
                     var buffer = new byte[1024];
                     int bytesRead;
-                    while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) == buffer.Length)
+                    while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) >0)//== buffer.Length) // это был не баг, так и должно быть
                     {
                         output.Write(buffer, 0, bytesRead);
                     }

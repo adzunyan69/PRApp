@@ -33,7 +33,7 @@ namespace PhotoRecognizer
             FloatingActionButton fabCam = FindViewById<FloatingActionButton>(Resource.Id.fabCam);
             fabCam.Click += FabCamOnClick;
             imageView = FindViewById<ImageView>(Resource.Id.thisImage);
-            
+            UDPConnection.SendBroadcast();
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
